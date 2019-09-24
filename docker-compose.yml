@@ -1,0 +1,30 @@
+# reference
+# - https://github.com/amancevice/docker-superset/blob/master/examples/postgres/docker-compose.yml
+
+version: '3'
+services:
+  redis:
+    image: redis
+    restart: always
+    volumes:
+      - redis:/data
+
+  superset:
+    image: amancevice/superset:0.34.0
+    restart: always
+    depends_on:
+      - redis
+    ports:
+      - "8088"
+    volumes:
+      - ./superset_config.py:/etc/superset/superset_config.py
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - superset
+
+volumes:
+  redis:
